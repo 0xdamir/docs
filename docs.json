@@ -88,8 +88,8 @@
             "group": "Cross-Chain Calls",
             "pages": [
               "dev-guides/solana/sending-cross-chain-messages",
-              "dev-guides/solana/on-chian-external-call-preparation",
-              "dev-guides/solana/off-chian-external-call-preparation"
+              "dev-guides/solana/on-chain-external-call-preparation",
+              "dev-guides/solana/off-chain-external-call-preparation"
             ]
           }
         ]
