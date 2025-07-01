@@ -11,45 +11,85 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "deBridge Messaging Protocol",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "dmp/protocol-overview",
+              "dmp/fees-supported-chains",
+              "dmp/deployed-contracts",
+              "dmp/security",
+              "dmp/slashing-and-delegated-staking"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Dev Guides",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "dev-guides/cross-chain-call-lifecycle",
+              "dev-guides/development-tools",
+              "dev-guides/gathering-data-for-claim"
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "EVM",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Examples",
             "pages": [
-              "api-reference/introduction"
+              "dev-guides/evm/building-evm-dapp"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Interfaces",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "dev-guides/evm/interfaces/ICallProxy",
+              "dev-guides/evm/interfaces/IDeBridgeGate",
+              "dev-guides/evm/interfaces/IDeBridgeToken",
+              "dev-guides/evm/interfaces/IDeBridgeTokenDeployer",
+              "dev-guides/evm/interfaces/IOraclesManager",
+              "dev-guides/evm/interfaces/ISignatureVerifier",
+              "dev-guides/evm/interfaces/IWethGate"
+            ]
+          },
+          {
+            "group": "Libraries",
+            "pages": [
+              "dev-guides/evm/libraries/flags"
+            ]
+          },
+          {
+            "group": "Periphery",
+            "pages": [
+              "dev-guides/evm/periphery/CallProxy",
+              "dev-guides/evm/periphery/DeBridgeToken",
+              "dev-guides/evm/periphery/DeBridgeTokenProxy",
+              "dev-guides/evm/periphery/SimpleFeeProxy"
+            ]
+          },
+          {
+            "group": "Transfers",
+            "pages": [
+              "dev-guides/evm/transfers/DeBridgeGate",
+              "dev-guides/evm/transfers/DeBridgeTokenDeployer",
+              "dev-guides/evm/transfers/OraclesManager",
+              "dev-guides/evm/transfers/SignatureVerifier",
+              "dev-guides/evm/transfers/WethGate"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Solana",
+        "groups": [
+          {
+            "group": "Cross-Chain Calls",
+            "pages": [
+              "dev-guides/solana/sending-cross-chain-messages",
+              "dev-guides/solana/on-chian-external-call-preparation",
+              "dev-guides/solana/off-chian-external-call-preparation"
             ]
           }
         ]
@@ -59,18 +99,13 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "href": "https://docs.debridge.finance",
           "icon": "book-open-cover"
         },
         {
           "anchor": "Community",
           "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "icon": "discord"
         }
       ]
     }
