@@ -98,9 +98,19 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://docs.debridge.finance",
-          "icon": "book-open-cover"
+          "anchor": "deBridge Home",
+          "href": "https://acme-68677d63.mintlify.app/",
+          "icon": "house"
+        },
+        {
+          "anchor": "deBridge Messaging Protocol",
+          "href": "https://acme-fc8786fa.mintlify.app/",
+          "icon": "envelope"
+        },
+        {
+          "anchor": "deBridge Liquidity Network",
+          "href": "https://acme-1c46979f.mintlify.app/",
+          "icon": "envelope-open-dollar"
         },
         {
           "anchor": "Community",
