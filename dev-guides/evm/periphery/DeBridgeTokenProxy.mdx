@@ -2,12 +2,17 @@
 title: "DeBridgeTokenProxy"
 ---
 
-Eu Lorem officia cillum enim id consectetur. Irure Lorem sit commodo laboris fugiat deserunt pariatur cupidatat magna aliquip nisi pariatur laborum. In excepteur incididunt deserunt id officia Lorem in magna fugiat. Cupidatat tempor anim nisi mollit ex officia deserunt aute aliquip ut minim pariatur. Excepteur culpa reprehenderit eiusmod et aliquip magna amet officia elit.
+This contract implements a proxy that gets the implementation address for each call from `DeBridgeTokenDeployer`. It's deployed by
+`DeBridgeTokenDeployer`. Implementation is `DeBridgeToken`.
 
-Nostrud cillum culpa anim consectetur et ullamco ea sint ut ipsum elit. Cillum et occaecat esse aute ut tempor ea ut minim. Mollit proident veniam enim elit nisi Lorem eiusmod minim exercitation aute ut. Commodo ad occaecat ea mollit do elit. Excepteur elit laboris id consectetur consectetur et voluptate laborum. Quis elit proident ex id aliqua. Reprehenderit deserunt enim culpa nulla veniam pariatur exercitation do ullamco veniam qui ut.
+---
 
-Sint consequat pariatur anim eiusmod officia consequat commodo irure. Nisi non consequat fugiat nisi aliqua. Laboris aliqua quis deserunt consequat. Nostrud ullamco magna nisi sit in occaecat.
+## Functions
 
-Laboris aliquip anim dolore et ipsum sit irure nulla veniam in aliqua ipsum. Nostrud consectetur est pariatur dolore ut cillum nostrud ea deserunt esse dolor elit consequat incididunt. Dolore culpa et culpa tempor mollit laborum sunt consequat. Deserunt mollit deserunt nulla adipisicing aliqua cillum elit irure aliquip laborum et aute reprehenderit sunt. Nulla mollit commodo occaecat nisi eiusmod ea esse cillum cillum reprehenderit qui.
-
-Est minim mollit laboris laborum proident eu cillum non. Occaecat eu amet labore pariatur sunt sunt occaecat sint in. Consectetur enim reprehenderit est amet dolore nisi commodo eu qui laborum adipisicing. Est consectetur aute esse velit cupidatat incididunt ad ea esse adipisicing cupidatat ad cillum. Nostrud sint consequat voluptate ut aliqua commodo id sit est eiusmod deserunt ut. Cillum eu exercitation fugiat aliqua ut enim do est. Amet qui officia laboris reprehenderit.
+### constructor
+```solidity
+function constructor(
+    address beacon,
+    bytes data
+) public
+```

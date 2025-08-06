@@ -39,7 +39,8 @@
           {
             "group": "Examples",
             "pages": [
-              "dev-guides/evm/building-evm-dapp"
+              "dev-guides/evm/building-evm-dapp",
+              "dev-guides/evm/introduction"
             ]
           },
           {

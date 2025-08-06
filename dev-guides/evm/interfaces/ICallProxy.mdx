@@ -2,14 +2,74 @@
 title: "ICallProxy"
 ---
 
-Lorem eu enim proident id velit enim. Ea dolor in duis do laborum id irure. Nisi non qui in sunt. In voluptate ea id irure consectetur ut eu duis eu ex labore deserunt sunt dolor.
+## Functions
 
-Adipisicing sint officia labore magna ad Lorem sint. Reprehenderit consectetur exercitation nostrud consequat labore laborum id esse occaecat ex laborum commodo consectetur minim. Sit dolore do eu ea occaecat in do duis qui sit voluptate nostrud. Elit esse commodo anim esse id fugiat labore id ipsum voluptate. Consequat veniam fugiat sint aute velit aliquip commodo fugiat nulla anim.
+### submissionChainIdFrom
 
-Sint adipisicing ea ut incididunt mollit tempor tempor do occaecat Lorem velit amet commodo incididunt. Consequat proident aliquip esse aliqua aliquip ad. Eiusmod occaecat quis incididunt qui cupidatat anim commodo sunt dolor est. Excepteur cillum elit reprehenderit quis eu mollit amet duis exercitation officia. Velit reprehenderit elit est adipisicing officia cillum veniam proident tempor dolor pariatur ullamco cupidatat. Ipsum fugiat deserunt sit ut incididunt. Qui aliqua qui sunt ea.
+```solidity
+function submissionChainIdFrom() external returns (uint256)
+```
 
-Elit voluptate Lorem qui laborum dolor id quis. Culpa nostrud commodo sunt esse et laboris dolor dolor est. Exercitation ipsum minim labore exercitation laboris veniam consequat commodo enim consectetur non. Officia incididunt amet reprehenderit excepteur consectetur aute.
+Chain from which the current submission is received.
 
-Labore id esse proident cillum sint nostrud enim elit excepteur exercitation deserunt enim tempor nisi. Laborum ipsum officia voluptate voluptate aute. Sunt aute ea pariatur labore irure fugiat Lorem esse exercitation consequat veniam et id. Eiusmod officia est aliqua aliquip aliqua velit dolor eiusmod irure.
+### submissionNativeSender
 
-Excepteur pariatur sint dolor anim veniam dolor quis duis. Ut est et elit magna irure laborum veniam mollit duis duis non Lorem ex. Magna exercitation reprehenderit occaecat aliquip commodo ea dolore ut excepteur sunt incididunt. Sit laboris voluptate magna aliquip dolore qui. Excepteur elit quis laborum consectetur qui aliqua aliquip culpa ullamco consectetur proident elit.
+```solidity
+function submissionNativeSender() external returns (bytes)
+```
+
+Native sender of the current submission.
+
+### call
+
+```solidity
+function call(
+    address _reserveAddress,
+    address _receiver,
+    bytes _data,
+    uint256 _flags,
+    bytes _nativeSender,
+    uint256 _chainIdFrom
+) external returns (bool)
+```
+
+Used for calls where native asset transfer is involved.
+
+**Parameters:**
+
+| Name              | Type      | Description                                               |
+|-------------------|-----------|-----------------------------------------------------------|
+| `_reserveAddress` | `address` | Receiver if call to `_receiver` fails                     |
+| `_receiver`       | `address` | Contract to be called                                     |
+| `_data`           | `bytes`   | Call data                                                 |
+| `_flags`          | `uint256` | Behavior flags (see Flags library)                        |
+| `_nativeSender`   | `bytes`   | Native sender                                             |
+| `_chainIdFrom`    | `uint256` | Chain ID of the originating chain                         |
+
+### callERC20
+
+```solidity
+function callERC20(
+    address _token,
+    address _reserveAddress,
+    address _receiver,
+    bytes _data,
+    uint256 _flags,
+    bytes _nativeSender,
+    uint256 _chainIdFrom
+) external returns (bool)
+```
+
+Used for calls where ERC20 transfer is involved.
+
+**Parameters:**
+
+| Name              | Type      | Description                                               |
+|-------------------|-----------|-----------------------------------------------------------|
+| `_token`          | `address` | Asset address                                             |
+| `_reserveAddress` | `address` | Receiver if call to `_receiver` fails                     |
+| `_receiver`       | `address` | Contract to be called                                     |
+| `_data`           | `bytes`   | Call data                                                 |
+| `_flags`          | `uint256` | Behavior flags (see Flags library)                        |
+| `_nativeSender`   | `bytes`   | Native sender                                             |
+| `_chainIdFrom`    | `uint256` | Chain ID of the originating chain                         |

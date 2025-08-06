@@ -2,22 +2,106 @@
 title: "Off-Chain External Call Preparation"
 ---
 
-Nisi esse reprehenderit reprehenderit quis consectetur esse amet adipisicing minim occaecat ut voluptate elit. Minim ad id veniam voluptate velit. Magna labore reprehenderit culpa exercitation est ut duis aliquip do mollit. Eu consectetur irure quis eiusmod nisi nostrud ullamco laboris. Dolore cupidatat sit qui nisi non culpa duis excepteur sint ullamco consectetur sint ullamco.
+Instructions should be serialized one by one, final calldata is a concatenation of separately serialized instructions.
 
-Dolor quis dolore sunt quis dolor mollit. Reprehenderit ea in adipisicing sint ea pariatur laboris occaecat deserunt aute adipisicing. Aliqua incididunt irure velit minim et proident reprehenderit quis aliqua cupidatat. Irure mollit ea adipisicing occaecat esse sunt sunt anim amet dolor velit. Exercitation amet eiusmod est qui ad minim Lorem consequat velit ipsum. Adipisicing id aliqua irure aliqua fugiat eiusmod consectetur Lorem laboris occaecat voluptate. Deserunt consequat elit nulla labore sint dolor consequat minim consectetur consectetur.
+For the info about the rewards, substitutions, and expenses check the previous section. 
 
-Lorem qui ipsum occaecat aliquip voluptate laborum. Veniam proident consectetur qui cupidatat ad elit sint ipsum commodo excepteur in adipisicing. Non deserunt officia eu proident ea exercitation amet deserunt adipisicing ipsum id ea reprehenderit. Eiusmod magna ad aute proident commodo non dolore id. Deserunt do voluptate pariatur irure sit cupidatat id et cupidatat fugiat sint. Nostrud voluptate aute deserunt dolor id sit officia incididunt voluptate.
+Solana's `TransactionInstructions` could be serialized into calldata format using
+[`@debridge-finance/debridge-external-call`](https://www.npmjs.com/package/@debridge-finance/debridge-external-call) npm package:
 
-Deserunt pariatur nulla consequat deserunt ea sit sit non labore et. Pariatur deserunt ad aliquip aute ex reprehenderit aliquip cupidatat proident consequat deserunt anim est. Occaecat veniam aliquip ea et est nisi consequat voluptate enim consectetur.
+```typescript
+import * as wasm from "@debridge-finance/debridge-external-call";
+import { PublicKey, TransactionInstruction } from "@solana/web3.js";
 
-Adipisicing eiusmod ad elit nostrud adipisicing. Eiusmod ullamco laboris velit ut labore sunt aliquip officia elit veniam. Dolor elit laborum ad aliqua. Reprehenderit nisi pariatur enim in enim ex. Deserunt adipisicing in duis magna ut anim eiusmod consectetur mollit id adipisicing.
+/**
+ * Substitutes amount at offset with `walletBalance(accounts[account_index]) - subtraction`
+ */
+type AmountSubstitution = {
+  /**
+   * big or little endian
+   */
+  is_big_endian: boolean;
+  /**
+   * At what offset substitution should be done
+   */
+  offset: number;
+  /**
+   * index of account in TransactionInstruction.keys to get balance for
+   */
+  account_index: number;
+  /**
+   * Amount to deduct from wallet balance
+   */
+  subtraction: number;
+};
 
-Dolore officia exercitation id do nisi enim laboris quis. Laborum cillum ex aliqua ex aliqua culpa enim id reprehenderit eiusmod anim. Veniam sunt non id elit magna.
+/**
+ * Since we don't know submissionAuth at the moment of calldata preparation we can prepare substitution to replace
+ * account at `index` with actual ATA(submissionAuth, tokenMint) during execution
+ */
+type WalletSubstitution = {
+  /**
+   * Token mint to calculate ATA for
+   */
+  token_mint: string;
+  /**
+   * Account at this index will be replaced with ATA(submissionAuth, tokenMint) during execution
+   */
+  index: number;
+};
 
-Aute sint tempor sint reprehenderit proident quis sit. Labore voluptate aliqua incididunt minim mollit adipisicing. Qui irure aliquip fugiat cupidatat exercitation elit dolore in laborum adipisicing esse incididunt ad. Consectetur incididunt consequat duis culpa eiusmod mollit ea in magna commodo.
+/**
+ * Structure required by wasm module
+ */
+interface IExtIx {
+  keys: {
+    pubkey: string;
+    isSigner: boolean;
+    isWritable: boolean;
+  }[];
+  data: Buffer;
+  programId: string;
+}
 
-Culpa commodo nulla qui id velit tempor deserunt est enim nulla veniam commodo minim non. Aute ea voluptate mollit ipsum occaecat nostrud ut in duis ea. Tempor nulla culpa est proident mollit fugiat.
+function ixToIExtIx(ix: TransactionInstruction): IExtIx {
+  return {
+    keys: ix.keys.map((meta) => ({
+      pubkey: meta.pubkey.toBase58(),
+      isSigner: meta.isSigner,
+      isWritable: meta.isWritable,
+    })),
+    programId: ix.programId.toBase58(),
+    data: ix.data,
+  };
+}
 
-Aute amet eiusmod ullamco non sint Lorem non dolor ullamco reprehenderit. Pariatur labore non et culpa do est cupidatat minim elit proident. Nisi id pariatur qui minim reprehenderit adipisicing laboris enim. Culpa laborum incididunt nisi laboris quis culpa adipisicing excepteur.
+function serialize(
+  instruction: TransactionInstruction,
+  substitutions?: {
+    amountSubstitutions?: AmountSubstitution[];
+    walletSubstitutions?: WalletSubstitution[];
+  },
+  expense?: bigint,
+  reward?: bigint,
+  isInMandatoryBlock: boolean = false,
+) {
+  const ixWrapper = new wasm.ExternalInstructionWrapper(
+    reward,
+    expense,
+    isInMandatoryBlock,
+    substitutions?.amountSubstitutions ?? [],
+    substitutions?.walletSubstitutions ?? [],
+    ixToIExtIx(instruction),
+  );
 
-Ad minim nostrud dolore nulla eiusmod nisi. Nostrud sint ea proident ut. Laborum elit enim occaecat veniam officia aute consectetur. Incididunt Lorem tempor non labore nostrud exercitation ullamco. Pariatur voluptate Lorem officia duis dolor adipisicing sunt eiusmod cupidatat eiusmod.
+  return ixWrapper.serialize();
+}
+
+const ix1: TransactionInstruction;
+const ix2: TransactionInstruction;
+
+const serializedIx1 = serialize(ix1, undefined, 1000n);
+const serializedIx2 = serialize(ix2, undefined, 2000n);
+
+const calldata = Buffer.concat([serializedIx1, serializedIx2 /** rest serialized instructions if any */]);
+```

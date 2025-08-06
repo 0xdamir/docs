@@ -2,12 +2,77 @@
 title: "WethGate"
 ---
 
-Culpa adipisicing ea nisi aliqua ullamco ut ullamco amet ad id consequat. Amet non consequat veniam laborum labore voluptate. Minim consectetur est reprehenderit est consequat voluptate ad veniam deserunt.
+Upgradable contracts cannot receive ether via `transfer` because of increased `SLOAD` gas cost. We use this non-upgradeable contract as the recipient
+and then immediately transfer to an upgradable contract. More details about this issue can be found
+[here](https://forum.openzeppelin.com/t/openzeppelin-upgradeable-contracts-affected-by-istanbul-hardfork/1616).
 
-Ad magna dolor eiusmod esse est aute officia fugiat cillum ad ex duis sint quis. Nisi Lorem pariatur exercitation consequat labore labore ad velit consequat. Do id magna aliqua sint laborum fugiat Lorem et id cupidatat nisi Lorem. Quis Lorem voluptate enim culpa non occaecat excepteur deserunt occaecat. Nisi irure officia labore laboris labore eiusmod reprehenderit minim minim ea nisi. Consectetur eu qui qui deserunt sit duis eu officia incididunt est exercitation. Dolore cillum id nisi reprehenderit quis ullamco quis laboris aliquip consequat elit.
+---
 
-Aute adipisicing irure sit cillum. Commodo eiusmod anim enim Lorem amet culpa officia qui irure laborum ex enim cillum. Proident aute ex labore magna laborum laborum. Dolore aute tempor ea aliquip adipisicing sunt aute amet proident in.
+## Variables
 
-Duis sunt excepteur do dolore ipsum occaecat consequat ut duis ex amet. Proident ipsum aute sunt culpa et ut veniam cillum consectetur reprehenderit tempor incididunt. Proident consectetur Lorem cillum ex labore. Labore mollit sit laboris ad qui aliquip esse mollit fugiat fugiat sit cupidatat do do. Labore consequat anim elit in dolore.
+### weth
+```solidity
+contract IWETH public weth;
+```
+Wrapped native token contract
 
-Magna voluptate dolor et commodo nisi deserunt ad irure cupidatat cupidatat anim duis nisi Lorem. Esse in reprehenderit aute cillum do. Cupidatat voluptate nostrud anim nulla tempor exercitation officia laboris ipsum cillum occaecat anim. Dolor et irure non ipsum nisi consequat exercitation occaecat id. Eu non culpa deserunt nisi esse incididunt consectetur elit. Incididunt deserunt consequat do non proident ullamco eiusmod do consectetur excepteur occaecat. Tempor deserunt sint excepteur laboris fugiat pariatur elit.
+---
+
+## Functions
+
+### constructor
+```solidity
+function constructor(
+    contract IWETH _weth
+) public
+```
+
+### withdraw
+```solidity
+function withdraw(
+    address receiver,
+    uint256 wad
+) external
+```
+Transfer assets to a receiver.
+
+#### Parameters:
+
+| Name     | Type     | Description                        |
+|----------|----------|------------------------------------|
+| receiver | address  | This address will receive a transfer |
+| wad      | uint256  | Amount in wei                      |
+
+---
+
+### _safeTransferETH
+```solidity
+function _safeTransferETH(
+    address _to,
+    uint256 _value
+) internal
+```
+
+### receive
+```solidity
+function receive() external
+```
+
+### version
+```solidity
+function version() external returns (uint256)
+```
+Get this contract's version
+
+---
+
+## Events
+
+### Withdrawal
+```solidity
+event Withdrawal(
+    address receiver,
+    uint256 wad
+)
+```
+Emitted when any amount is withdrawn.

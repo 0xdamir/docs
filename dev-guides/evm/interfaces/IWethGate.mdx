@@ -2,14 +2,23 @@
 title: "IWethGate"
 ---
 
-Cillum mollit sint do quis cillum ullamco fugiat consequat magna enim voluptate commodo. Nulla quis amet ut sint minim aliqua est voluptate exercitation. Amet Lorem mollit velit laboris mollit non et elit deserunt do reprehenderit aute laboris enim. Do pariatur ut nostrud reprehenderit dolore consectetur laborum quis consequat duis. Exercitation voluptate ad anim Lorem aliqua ex aliqua nisi aliqua mollit Lorem. Laboris aliqua veniam nulla voluptate do et labore amet Lorem velit irure quis.
+## Functions
 
-In do nostrud cupidatat tempor excepteur labore duis anim voluptate. Consectetur veniam sunt reprehenderit in culpa est consequat non non laboris occaecat nisi nostrud. Minim sunt nostrud dolore qui elit. Magna veniam duis aliquip adipisicing adipisicing et laborum magna.
+### withdraw
 
-Amet voluptate deserunt Lorem incididunt amet occaecat nulla ea veniam aliqua labore consequat. Enim sunt nulla cupidatat elit sunt quis. Reprehenderit do consequat amet dolore qui. Id dolore dolore exercitation cupidatat est ad duis qui duis voluptate aliqua. Dolor fugiat ea anim nulla in. Lorem ad quis minim nulla tempor sint esse sit consequat laboris culpa commodo.
+```solidity
+function withdraw(
+    address receiver,
+    uint256 wad
+) external
+```
 
-Velit elit ut ipsum irure aliquip aliquip nulla dolore. Officia voluptate mollit reprehenderit ipsum duis cillum enim consectetur. Aute anim officia velit cillum velit amet Lorem Lorem fugiat ex commodo ad. Elit commodo velit ut esse. Dolore magna esse et id esse et ut. In veniam laboris voluptate laboris ipsum reprehenderit mollit eiusmod sunt et quis anim eu labore.
+Transfer assets to a receiver.
 
-Cillum amet laboris in qui nostrud nisi esse ut elit est irure. Magna enim occaecat est nisi exercitation. Officia consectetur excepteur mollit enim in labore do culpa excepteur in ut proident. Pariatur officia adipisicing pariatur incididunt dolore et aliqua magna.
+**Parameters:**
 
-Elit deserunt fugiat ullamco nulla amet sit. Deserunt ea officia amet dolore adipisicing ex amet. Do laboris enim elit aute sint nulla aliqua enim eu nostrud. Amet mollit incididunt labore enim anim non adipisicing ullamco nostrud officia. Eiusmod incididunt tempor minim in. Non aute aliquip tempor qui. Dolor esse officia in adipisicing aliqua.
+| Name      | Type      | Description                        |
+|-----------|-----------|------------------------------------|
+| `receiver`| `address` | This address will receive a transfer.|
+| `wad`     | `uint256` | Amount in wei                      |
+

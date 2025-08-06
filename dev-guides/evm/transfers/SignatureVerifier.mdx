@@ -2,12 +2,141 @@
 title: "SignatureVerifier"
 ---
 
-Aliqua nostrud laboris anim in incididunt est. Eiusmod et mollit velit ut aute veniam id anim ullamco tempor. Aliquip anim veniam fugiat esse minim dolore elit voluptate fugiat non est exercitation laborum ea. Velit occaecat ea officia minim elit eu esse est consequat proident aute id est. Reprehenderit elit exercitation ea amet reprehenderit eiusmod voluptate ipsum commodo eiusmod magna pariatur.
+Used to verify that a transfer is signed by oracles.
 
-Ullamco esse cupidatat in tempor exercitation minim sunt fugiat in irure sit qui et. Qui qui quis ea nisi pariatur non in minim amet voluptate Lorem non magna. Elit sit enim sint excepteur. Id dolore culpa dolore consectetur voluptate Lorem. Ex ea aliquip fugiat veniam in pariatur amet culpa ipsum duis ullamco. Veniam consequat aliquip proident et dolore id enim deserunt duis cupidatat culpa irure. Non exercitation commodo irure dolor enim nulla ullamco culpa elit ea esse consequat ipsum.
+---
 
-Non non fugiat fugiat irure minim eiusmod eu exercitation qui et cupidatat tempor. Ipsum velit dolor esse sit laboris elit pariatur cupidatat. Laboris dolor ad do occaecat duis ad in consectetur ex incididunt laboris culpa pariatur.
+## Variables
 
-Officia non ipsum aliquip laboris quis ipsum. Ad exercitation excepteur nulla non est. Excepteur dolore exercitation do nisi veniam voluptate dolore Lorem aliquip.
+### confirmationThreshold
+```solidity
+uint8 public confirmationThreshold;
+```
+Number of required confirmations per block after the extra check is enabled
 
-Reprehenderit commodo mollit Lorem qui pariatur consectetur sint ex et ex proident nisi veniam sint. Nisi ullamco incididunt sint dolore enim laboris veniam laborum mollit elit quis quis voluptate reprehenderit. Lorem Lorem laborum nostrud irure duis fugiat excepteur sunt. Nostrud in id in eiusmod aliqua. Esse culpa dolor Lorem quis. Labore irure pariatur exercitation aute magna est enim cupidatat magna aliquip. Proident deserunt cillum do duis duis ullamco culpa commodo id voluptate mollit eiusmod magna.
+### submissionsInBlock
+```solidity
+uint40 public submissionsInBlock;
+```
+Submissions count in current block
+
+### currentBlock
+```solidity
+uint40 public currentBlock;
+```
+Current block
+
+### debridgeAddress
+```solidity
+address public debridgeAddress;
+```
+Debridge gate address
+
+---
+
+## Functions
+
+### initialize
+```solidity
+function initialize(
+    uint8 _minConfirmations,
+    uint8 _confirmationThreshold,
+    uint8 _excessConfirmations
+) public
+```
+Constructor that initializes the most important configurations.
+
+#### Parameters:
+
+| Name                  | Type   | Description                                          |
+|-----------------------|--------|------------------------------------------------------|
+| _minConfirmations     | uint8  | Common confirmations count.                          |
+| _confirmationThreshold| uint8  | Confirmations per block after extra check is enabled |
+| _excessConfirmations  | uint8  | Confirmations count in case of excess activity       |
+
+---
+
+### submit
+```solidity
+function submit(
+    bytes32 _submissionId,
+    bytes _signatures,
+    uint8 _excessConfirmations
+) external
+```
+Check confirmation (validate signatures) for the transfer request.
+
+#### Parameters:
+
+| Name                | Type     | Description                      |
+|---------------------|----------|----------------------------------|
+| _submissionId       | bytes32  | Submission identifier.           |
+| _signatures         | bytes    | Array of signatures by oracles.  |
+| _excessConfirmations| uint8    | Override min confirmations count |
+
+---
+
+### setThreshold
+```solidity
+function setThreshold(
+    uint8 _confirmationThreshold
+) external
+```
+Sets minimal required confirmations.
+
+#### Parameters:
+
+| Name                  | Type   | Description        |
+|-----------------------|--------|--------------------|
+| _confirmationThreshold| uint8  | Confirmation info. |
+
+---
+
+### setDebridgeAddress
+```solidity
+function setDebridgeAddress(
+    address _debridgeAddress
+) external
+```
+Sets core debridge contract address.
+
+#### Parameters:
+
+| Name             | Type    | Description       |
+|------------------|---------|-------------------|
+| _debridgeAddress | address | Debridge address. |
+
+---
+
+### isValidSignature
+```solidity
+function isValidSignature(
+    bytes32 _submissionId,
+    bytes _signature
+) external returns (bool)
+```
+Check is valid signature
+
+#### Parameters:
+
+| Name           | Type     | Description            |
+|----------------|----------|------------------------|
+| _submissionId  | bytes32  | Submission identifier. |
+| _signature     | bytes    | Signature by oracle.   |
+
+---
+
+### _countSignatures
+```solidity
+function _countSignatures(
+    bytes _signatures
+) internal returns (uint256)
+```
+
+---
+
+### version
+```solidity
+function version() external returns (uint256)
+```
+Get this contract's version

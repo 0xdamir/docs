@@ -1,23 +1,59 @@
 ---
 title: "Slashing and Delegated Staking"
+mode: "wide"
 ---
 
-Cupidatat mollit voluptate cillum elit proident excepteur reprehenderit exercitation occaecat nostrud tempor. Consequat est anim velit sint esse. Exercitation quis ea sit duis enim. Duis voluptate consectetur reprehenderit consectetur. Do ipsum minim culpa tempor ut sit cillum nostrud adipisicing eu elit eu ullamco laboris. Ut eu id esse in excepteur deserunt ea elit cillum laboris.
+![Slashing and Delegated Staking](/images/slashing.avif)
 
-Eiusmod cillum dolore eiusmod quis amet occaecat labore. Laboris aliqua anim reprehenderit irure occaecat est ea. Elit dolor ad aliqua sunt tempor in quis. Tempor non sunt aliqua excepteur ullamco incididunt sint amet qui proident ad ad.
+Delegated staking and slashing mechanics act as a backbone of protocol security and prevent economic incentives for validators to get into collusion
+and forge messages.
 
-Sit ad ex ex labore. Velit mollit ut in irure occaecat quis laboris laboris sint voluptate irure pariatur eiusmod voluptate. Mollit tempor quis aliqua in elit dolor in aute quis consectetur dolore. Minim sint dolor nostrud occaecat id ipsum anim. Nulla elit elit non Lorem fugiat culpa esse non velit. Anim eu ad officia nisi Lorem ad in est aute eu. Do veniam anim voluptate nulla velit non ex pariatur adipisicing.
+A DelegatedStaking smart contract is part of the deBridge protocol and implements slashing and delegated staking logic. Anyone (including validators
+themselves) can delegate liquidity for validators which act as a financial guarantee of validators' fairness. There are two ways to attract liquidity
+into collateral:
 
-Excepteur deserunt amet voluptate voluptate elit officia. Enim aute ipsum ex officia et exercitation ipsum est magna esse nostrud. Ea consequat sint aute deserunt ea. Qui dolore laborum non veniam amet ea labore laborum reprehenderit nisi nisi non. Excepteur Lorem dolor deserunt ea amet deserunt sunt veniam.
+# Responsibility of Validators
+The liquidity delegated to validators may be used for slashing in case validators validated forged or censored message. In this case, anyone who had a
+financial loss due to validator misbehavior will be compensated by deBridge governance from the amount slashed from the validator's collateral. 
 
-Cupidatat incididunt veniam excepteur pariatur commodo elit aute sint. Quis in adipisicing ad non. Est id minim magna tempor dolore aute exercitation magna proident labore esse amet ut anim. Sit magna ad exercitation eiusmod magna culpa ex elit cillum Lorem aliquip. Nulla fugiat dolore velit ad qui proident dolore deserunt fugiat ipsum. Excepteur excepteur enim ut aliqua mollit mollit et tempor Lorem proident. Elit eu labore quis nostrud adipisicing amet ex adipisicing tempor Lorem fugiat quis.
+Thus, in addition to reputational risks, validators are financially responsible for the proper operation of the protocol and its fault tolerance.
+There are two ways how validators can attract liquidity into collateral:
+- Validators stake their own liquidity into collateral
+- Validators attract liquidity from delegators and share rewards paid by the protocol
 
-Do sit laborum sit nulla. Culpa irure labore labore Lorem do veniam adipisicing reprehenderit anim. Laboris magna velit consectetur irure cillum officia ad dolor sunt culpa. Consequat amet cillum proident voluptate nulla minim nisi ullamco minim commodo. Ullamco eiusmod est labore proident reprehenderit magna enim nostrud elit voluptate laboris nisi. Ea anim nisi enim aute do elit. Consectetur excepteur ullamco culpa cupidatat nostrud culpa labore mollit ipsum enim nulla ullamco deserunt.
+# Delegated Staking
+Any user/wallet can increase the collateral of any validator if they believe that this validator is reliable, knows how to manage infrastructure, and
+won't incur any breakdowns and delays in the processing and validation of transactions.
 
-Sit sit id elit officia non nisi excepteur reprehenderit labore nostrud magna. Ut anim est proident exercitation non ut. Nisi esse quis sunt anim. Proident voluptate aliqua commodo est.
+The whitelist of assets that can be staked is managed by governance. Initially, onlyETH, USDT, USDC assets will be available for staking. Stablecoins
+allow hedging collateral during periods of market volatility to avoid shrinking of total collateral USD value during the bear market stages.
 
-Velit ipsum qui cillum sit in duis cupidatat excepteur magna amet. Ex exercitation enim proident aute enim sunt id. Ex nostrud magna sit ut reprehenderit aute do labore id. Esse excepteur amet exercitation magna nostrud pariatur minim adipisicing quis incididunt. Reprehenderit reprehenderit ea cupidatat Lorem irure. Eiusmod incididunt ex exercitation occaecat fugiat excepteur. Cupidatat quis cillum do aute.
+If the user decides to unstake any amount of staked assets, a cooldown period of 14 days should pass from the time of the unstaking request to the
+moment the user is able to claim their assets. Later on, the cooldown period for unstaking will be reduced to 7 days. The cooldown period is needed
+for several reasons:
 
-Deserunt commodo consequat ad occaecat velit commodo sint sint culpa occaecat nulla. Reprehenderit culpa veniam velit est occaecat incididunt nostrud id sit. Non nostrud officia nostrud aliquip. Do fugiat occaecat est proident cupidatat eu irure consectetur officia irure anim esse proident aliquip. Et cupidatat ullamco ex quis aliquip velit Lorem sunt magna.
+- To avoid front-running, so that users do not stake opportunistically for a short period of time to capitalize on rewards during periods of high
+  volumes
+- To give governance a time to slash validator collateral before delegators unstake their liquidity. Governance can pause/renew new stakes/unstakes
+  and ongoing cooldowns for specific validators or delegators. Also in case of failure, delegators who initiated unstaking (had active cooldown)
+  before the timestamp of the incident will not be slashed
 
-In consequat irure reprehenderit magna esse nisi cillum esse velit. Irure do esse ex quis do proident in. Sint consequat laborum adipisicing consectetur commodo. Magna reprehenderit irure aliqua aliquip in veniam. Dolore ullamco deserunt labore mollit ad aute velit ullamco deserunt do laboris voluptate cillum duis. Ea enim id cupidatat do ut dolore.
+Delegators can also transfer the stake between validators with a cooldown period of 2 days. This cooldown period is shorter since in case the user
+initiated a transfer after the failure of the original validator, governance will still be able to slash their stake even if it has already been
+transferred to another validator. Governance has the power to slash the stake of the specific validator (including a stake of all delegators who
+staked for them) or slash a specific delegator in case the delegator manages to transfer the stake to another validator before slashing occurs.
+
+Once unstaking or transfer of stake has been initiated, the delegator stops receiving protocol rewards on the stake under the cooldown period.
+
+# Fees Distribution
+As described in the protocol overview, deBridge infrastructure applies a small fee for each message and value transfer. Half of these fees are
+transferred to the deBridge treasury controlled by governance. Another half is converted into ETH and used as a payout to validators and their
+delegators. Each payout is evenly distributed among all active validators. 
+
+Each validator assigns a portion of protocol payouts profitSharingBPS to be shared with delegators. These basis points allow the validator to control
+the ratio between personal/attracted amounts of liquidity. Governance can set a minimum value of this parameter to avoid a situation when validators
+with a low personal stake assign profitSharingBPS close to zero to receive all the protocol payouts and limit the collateral of the protocol.
+
+Delegators receive a payout proportional to the USD equivalent of their stake in the validator's collateral pool. In order to perform the proper
+distribution of protocol rewards and correctly calculate a USD value of the volatile assets, the smart contract utilizes the oracle price feed of the
+staked assets.

@@ -2,12 +2,75 @@
 title: "IOraclesManager"
 ---
 
-Consequat cillum eu deserunt reprehenderit reprehenderit aliquip quis. Mollit aute dolore officia sit fugiat deserunt qui. Non mollit exercitation adipisicing excepteur incididunt excepteur fugiat adipisicing labore occaecat exercitation mollit ex. Labore ut cupidatat magna veniam. Enim laborum elit non occaecat adipisicing velit deserunt cillum anim.
 
-Aliquip Lorem in dolore mollit mollit. Aute et enim eiusmod aute cupidatat nostrud excepteur cupidatat non dolor id duis qui reprehenderit. Culpa occaecat labore amet velit eiusmod ea culpa incididunt. Sunt irure culpa ex ex qui consequat ipsum duis est magna pariatur cupidatat magna. Pariatur non occaecat officia sunt commodo eiusmod excepteur tempor veniam labore occaecat.
+## Events
 
-Amet labore excepteur ad fugiat incididunt cupidatat anim amet tempor exercitation aliquip. Laboris pariatur labore proident aute ea culpa irure duis amet proident. Laboris laboris deserunt sunt ipsum ut nulla esse ex aute officia consequat. Veniam incididunt occaecat fugiat ullamco tempor excepteur ut laborum voluptate. Anim incididunt do anim voluptate adipisicing deserunt aliqua ad voluptate velit tempor reprehenderit. Eiusmod cupidatat mollit laborum non Lorem sunt anim duis.
+### AddOracle
 
-Cillum sit aliqua Lorem veniam minim excepteur ea amet aliqua esse sint. Laborum voluptate minim ut non ipsum et consectetur voluptate sint reprehenderit labore cupidatat magna. Ullamco non enim ad laboris anim esse.
+```solidity
+event AddOracle(
+    address oracle,
+    bool required
+)
+```
 
-Nisi labore ex anim sit. Proident officia voluptate esse duis proident eu nisi qui proident incididunt aliquip nostrud magna. Non id id ea laborum Lorem laborum est dolor sit est nisi aliqua. Deserunt id dolore consequat culpa magna cupidatat excepteur voluptate aliquip esse minim sint enim et. Laboris minim dolor ad velit minim exercitation consequat proident cupidatat id Lorem sit sunt mollit. Amet eu culpa incididunt aute ea.
+Emitted when an oracle is added.
+
+**Parameters:**
+
+| Name      | Type      | Description                                              |
+|-----------|-----------|----------------------------------------------------------|
+| `oracle`  | `address` | Address of an added oracle                               |
+| `required`| `bool`    | Is this oracle's signature required for every transfer   |
+
+### UpdateOracle
+
+```solidity
+event UpdateOracle(
+    address oracle,
+    bool required,
+    bool isValid
+)
+```
+
+Emitted when an oracle is updated.
+
+**Parameters:**
+
+| Name      | Type      | Description                                              |
+|-----------|-----------|----------------------------------------------------------|
+| `oracle`  | `address` | Address of an updated oracle                            |
+| `required`| `bool`    | Is this oracle's signature required for every transfer  |
+| `isValid` | `bool`    | Is this oracle valid, i.e. should it be treated as one  |
+
+### DeployApproved
+
+```solidity
+event DeployApproved(
+    bytes32 deployId
+)
+```
+
+Emitted once the submission is confirmed by min required amount of oracles.
+
+### SubmissionApproved
+
+```solidity
+event SubmissionApproved(
+    bytes32 submissionId
+)
+```
+
+Emitted once the submission is confirmed by min required amount of oracles.
+
+## Structs
+
+### OracleInfo
+
+```solidity
+struct OracleInfo {
+    bool exist;
+    bool isValid;
+    bool required;
+}
+```

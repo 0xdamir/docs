@@ -2,12 +2,116 @@
 title: "CallProxy"
 ---
 
-Sunt cillum enim nulla labore sint enim laboris cupidatat id reprehenderit. Proident deserunt est eu sunt ex elit ea dolor esse proident in enim dolor exercitation. Culpa laboris aliqua consequat laboris. In exercitation quis ex quis anim do qui exercitation. Aliqua ex irure magna nostrud.
+Proxy to execute the other contract calls. This contract is used when a user requests transfer with specific call of other contract.
 
-Culpa minim velit pariatur eu consectetur in velit sunt cillum adipisicing. Adipisicing deserunt fugiat deserunt voluptate proident. Aute et excepteur officia quis mollit incididunt dolor culpa quis officia mollit velit. Nulla amet adipisicing est qui velit eiusmod sit magna. Occaecat laborum minim duis velit deserunt magna aute. Minim ipsum velit aute excepteur aute magna irure mollit exercitation excepteur dolor id exercitation. Pariatur tempor aute eiusmod qui.
+---
 
-Magna laborum id aliquip esse. Laborum ullamco culpa amet velit. Velit anim id excepteur minim aliqua sint ex est velit aute. Aliquip ullamco veniam laborum reprehenderit.
+## Variables
 
-Velit minim dolor veniam nulla id irure velit qui aute. Lorem eiusmod sit commodo veniam id cupidatat anim nulla aliquip commodo laboris. Enim adipisicing Lorem proident aute nulla Lorem est aliquip quis consectetur nisi magna.
+### DEBRIDGE_GATE_ROLE
+```solidity
+bytes32 public constant DEBRIDGE_GATE_ROLE;
+```
+Role allowed to withdraw fee
 
-Laborum pariatur ea elit magna aute. Voluptate anim labore voluptate magna consequat cupidatat tempor. Id est ad nostrud do mollit. Incididunt occaecat eiusmod aliquip ipsum ea reprehenderit excepteur est reprehenderit cillum veniam nulla. Fugiat duis ullamco cupidatat reprehenderit et nostrud consectetur culpa qui sit aliqua. Ullamco dolor duis nisi ad pariatur cupidatat duis aliqua incididunt adipisicing.
+### submissionChainIdFrom
+```solidity
+uint256 public submissionChainIdFrom;
+```
+Chain from which the current submission is received
+
+### submissionNativeSender
+```solidity
+bytes public submissionNativeSender;
+```
+Native sender of the current submission
+
+---
+
+## Functions
+
+### initialize
+```solidity
+function initialize() public
+```
+
+### call
+```solidity
+function call(
+    address _reserveAddress,
+    address _receiver,
+    bytes _data,
+    uint256 _flags,
+    bytes _nativeSender,
+    uint256 _chainIdFrom
+) external returns (bool _result)
+```
+Used for calls where native asset transfer is involved.
+
+#### Parameters:
+
+| Name            | Type     | Description                                                        |
+|-----------------|----------|--------------------------------------------------------------------|
+| _reserveAddress | address  | Receiver of the tokens if the call to _receiver fails              |
+| _receiver       | address  | Contract to be called                                              |
+| _data           | bytes    | Call data                                                          |
+| _flags          | uint256  | Flags to change behavior; see Flags library for details           |
+| _nativeSender   | bytes    | Native sender                                                      |
+| _chainIdFrom    | uint256  | Id of a chain that originated the request                          |
+
+---
+
+### callERC20
+```solidity
+function callERC20(
+    address _token,
+    address _reserveAddress,
+    address _receiver,
+    bytes _data,
+    uint256 _flags,
+    bytes _nativeSender,
+    uint256 _chainIdFrom
+) external returns (bool _result)
+```
+Used for calls where ERC20 transfer is involved.
+
+#### Parameters:
+
+| Name            | Type     | Description                                                        |
+|-----------------|----------|--------------------------------------------------------------------|
+| _token          | address  | Asset address                                                       |
+| _reserveAddress | address  | Receiver of the tokens if the call to _receiver fails              |
+| _receiver       | address  | Contract to be called                                              |
+| _data           | bytes    | Call data                                                          |
+| _flags          | uint256  | Flags to change behavior; see Flags library for details           |
+| _nativeSender   | bytes    | Native sender                                                      |
+| _chainIdFrom    | uint256  | Id of a chain that originated the request                          |
+
+---
+
+### externalCall
+```solidity
+function externalCall(
+    address destination,
+    uint256 value,
+    bytes data,
+    bytes _nativeSender,
+    uint256 _chainIdFrom,
+    bool storeSender
+) internal returns (bool result)
+```
+
+---
+
+### receive
+```solidity
+function receive() external
+```
+
+---
+
+### version
+```solidity
+function version() external returns (uint256)
+```
+Get this contract's version

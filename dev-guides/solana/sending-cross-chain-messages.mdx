@@ -2,22 +2,115 @@
 title: "Sending Cross-Chain Messages"
 ---
 
-Culpa sint excepteur laboris laborum laborum. Quis dolore occaecat sint sint excepteur. Non aute nostrud laborum qui et Lorem ipsum incididunt ipsum nisi ex commodo. Nulla velit dolor amet Lorem eu sint nostrud minim aute anim pariatur id. Do ex tempor irure Lorem deserunt id reprehenderit qui.
+To streamline communication with deBridge programs on the Solana blockchain, the debridge-solana-sdk has been developed. This Rust SDK allows for easy and efficient connection to the deBridge infrastructure, which enables decentralized transfers of messages and value between different supported blockchains.
 
-Commodo eu occaecat qui anim ut qui laboris dolor ad ut duis sunt deserunt sunt. Voluptate magna proident eiusmod eu pariatur eu eiusmod culpa nulla amet consectetur velit. Sit esse incididunt proident cupidatat do id ad consequat sit cillum. Dolore aliqua eiusmod sit eiusmod mollit anim.
+To start using our sdk, add it to dependencies by cargo:
 
-Consequat laboris sit ipsum ea sunt proident sunt sint commodo duis ea ea sint amet. Eu sint commodo ea et aliquip voluptate eu incididunt voluptate. In reprehenderit labore id exercitation commodo Lorem cupidatat cillum pariatur quis in laborum. Reprehenderit nostrud nulla quis consectetur commodo do ullamco. Reprehenderit deserunt irure ipsum excepteur sint cillum adipisicing nulla tempor non.
+```shell
+cargo add debridge-solana-sdk
+```
 
-Adipisicing consequat ad est in nisi dolore aliquip officia quis. Non et occaecat dolore cillum cupidatat sit consequat non veniam. Eu velit voluptate sit id eu cillum. Labore nostrud ullamco nisi reprehenderit aliqua aliqua minim irure et fugiat cillum anim aliquip eiusmod. Magna enim voluptate esse do qui culpa. Adipisicing commodo sunt eu et aute dolor.
+If you use the Anchor framework, then your program calling for a deBridge send might look like this:
 
-Commodo laborum cupidatat elit dolore aliqua deserunt cupidatat eu consectetur nulla mollit velit. Ad magna ut veniam nisi eiusmod dolore velit nulla velit nostrud et veniam ullamco. Laboris laborum cupidatat non ea id fugiat irure.
+```rust
+use anchor_lang::prelude::*;
 
-Velit dolore reprehenderit ipsum occaecat eu nisi dolore duis sint magna minim. Id ut ullamco commodo dolore consectetur veniam minim elit aliquip laborum dolor. In labore aliqua commodo consequat quis do commodo voluptate.
+declare_id!("3botMWU4s1Lcs4Q2wQBkZqsCW1vc3N9H9tY9SZYVs5vZ");
 
-Reprehenderit adipisicing commodo ullamco exercitation. Reprehenderit ex excepteur non aliquip do commodo culpa mollit minim sit deserunt minim. Adipisicing Lorem ea in elit pariatur officia voluptate minim exercitation. Mollit nisi non esse laborum laborum qui laborum consequat do enim minim voluptate ipsum. Dolore veniam irure magna sunt quis esse nisi et quis culpa pariatur sit eu occaecat. Ea dolor magna do velit irure reprehenderit et ea velit. Excepteur voluptate duis labore Lorem cillum.
+#[program]
+pub mod send_via_debridge {
+    use debridge_solana_sdk::prelude::*;
 
-Ea reprehenderit adipisicing adipisicing cupidatat qui proident nostrud adipisicing ipsum cillum nostrud occaecat excepteur voluptate. Dolor excepteur aliqua quis ad irure occaecat irure est. Commodo culpa nulla pariatur pariatur occaecat consectetur sit ut amet. Anim est ex esse consequat nisi amet reprehenderit pariatur veniam quis cupidatat.
+    use super::*;
 
-Amet do ipsum qui nostrud. Ad ea deserunt ad consectetur excepteur quis sunt do. Reprehenderit dolor voluptate deserunt laborum dolor non consequat deserunt laborum deserunt nisi sit sunt sint. Est do Lorem anim consequat consectetur commodo officia ipsum cupidatat proident amet. Magna ea proident esse veniam laboris proident sunt et dolore sunt incididunt.
+    pub fn send_via_debridge(ctx: Context<SendViaDebridge>) -> Result<()> {
+        invoke_debridge_send(
+            // Debridge Instruction Data
+            SendIx {
+                // Chain id to which the tokens are sent
+                target_chain_id: chain_ids::POLYGON_CHAIN_ID,
+                /// Address in `target_chain_id` that will receive the transferred tokens
+                receiver: hex::decode("bd1e72155Ce24E57D0A026e0F7420D6559A7e651").unwrap(),
+                // Use of fee in transfer token (not currently enabled)
+                is_use_asset_fee: false,
+                // Amount of sending tokens. From this amount fee will be taken
+                amount: 1000,
+                // Additional data for tokens sending with auto external execution
+                submission_params: None,
+                // Referral code to track your transfers
+                referral_code: None,
+            },
+            // List of accounts used by debridge-program, generated on the client
+            ctx.remaining_accounts,
+        )
+        .map_err(|err| err.into())
+    }
+}
 
-Culpa et laboris in nulla incididunt. Cupidatat quis ipsum ex commodo cupidatat excepteur id magna aliquip commodo ipsum. Aliquip duis anim cillum adipisicing voluptate tempor aliquip consequat aliqua laboris eu cillum nostrud.
+#[derive(Accounts)]
+pub struct SendViaDebridge {}
+```
+
+You can use any account in your logic. However, the remaining accounts you pass on will have to be created by the client. Our SDK provides an
+[example](https://github.com/debridge-finance/debridge-solana-sdk/tree/master/example-program/ts-examples) of how to use the TypeScript library. For
+this example it is:
+
+```ts
+import { DeBridgeSolanaClient } from "@debridge-finance/solana-contracts-client";
+import { AnchorProvider, Program, Wallet as AnchorWallet } from "@coral-xyz/anchor";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import { crypto, helpers, WRAPPED_SOL_MINT } from "@debridge-finance/solana-utils";
+
+const connection = new Connection(clusterApiUrl("mainnet-beta"));
+const example = new Program(
+    ExampleIDL,
+    "3botMWU4s1Lcs4Q2wQBkZqsCW1vc3N9H9tY9SZYVs5vZ",
+    new AnchorProvider(connection, {} as unknown as AnchorWallet, {}),
+  );
+const deBridge = new DeBridgeSolanaClient(connection, undefined, {
+    programId: "DEbrdGj3HsRsAzx6uH4MKyREKxVAfBydijLUF3ygsFfh",
+    settingsProgramId: "DeSetTwWhjZq6Pz9Kfdo1KoS5NqtsM6G8ERbX4SSCSft",
+  });
+
+const chainTo = 137;
+const receiver = "0xbd1e72155Ce24E57D0A026e0F7420D6559A7e651";
+const amount = 1000;
+const tokenMint = WRAPPED_SOL_MINT;
+
+const builder = example.methods.sendViaDebridge(
+    amount,
+    Array.from(crypto.normalizeChainId(chainTo)),
+    helpers.hexToBuffer(receiver),
+    false,
+  );
+
+const context = await deBridge.buildSendContext(
+    sender,
+    null,
+    tokenMint,
+    receiver,
+    chainTo,
+    false,
+    receiver,
+  );
+builder.remainingAccounts([...context.asAccountMeta, { isWritable: false, isSigner: false, pubkey: deBridge.program.programId }]);
+const tx = await builder.transaction();
+```
+
+The dependency packages that are used:
+- [@debridge-finance/solana-contracts-client](https://www.npmjs.com/package/@debridge-finance/solana-contracts-client) 
+- [@debridge-finance/solana-utils](https://www.npmjs.com/package/@debridge-finance/solana-utils)
+- [@coral-xyz/anchor](https://www.npmjs.com/package/@coral-xyz/anchor)
+- [@solana/web3.js](https://www.npmjs.com/package/@solana/web3.js)
+
+For detailed examples, within the SDK there is an
+[example-program](https://github.com/debridge-finance/debridge-solana-sdk/tree/master/example-program) project that allows you to see examples of
+various integrations and the corresponding client code for them. For example:
+- [send_via_debridge](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L38)
+- [send_via_debridge_with_native_fixed_fee](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L69)
+- [send_via_debridge_with_exact_amount](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L140)
+- [send_via_debridge_with_asset_fixed_fee](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L69)
+- [send_via_debridge_with_execution_fee](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L177)
+- [send_via_debridge_with_external_call](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L211)
+- [send_message_via_debridge](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L259)
+- [check_claiming](https://github.com/debridge-finance/debridge-solana-sdk/blob/7bb2ed38a135d3550dadfd00bdc78f50c19a701d/example-program/programs/debridge-solana-sdk-example/src/lib.rs#L371)

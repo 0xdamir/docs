@@ -2,12 +2,42 @@
 title: "IDeBridgeTokenDeployer"
 ---
 
-Laboris excepteur aute voluptate aliquip esse in dolor cillum laboris aliquip. Lorem pariatur duis proident ex. Sunt esse officia sit non nisi ex nisi sit nisi aliqua. Cupidatat incididunt in cupidatat ipsum do ex aliqua magna veniam. Consequat aliquip esse eiusmod culpa id eu ipsum fugiat cillum esse irure id et. Mollit eu occaecat minim fugiat est ullamco excepteur. Consequat sunt quis velit consequat fugiat excepteur non enim dolor duis consectetur cillum velit in.
 
-Aliquip fugiat officia ut eiusmod velit in ea ad sint duis minim irure enim. Enim id pariatur aliquip eiusmod nostrud sint id deserunt nostrud eiusmod sint. Velit eiusmod enim adipisicing consectetur cillum laborum nisi eiusmod consequat irure dolor aliqua magna. Adipisicing cillum adipisicing labore consectetur minim consequat proident culpa dolor id minim. Eu sunt id ut veniam sunt sunt dolore commodo cillum. Incididunt do nostrud deserunt laborum eu in dolore occaecat irure reprehenderit ullamco amet ut est.
+## Functions
 
-Aliquip aliquip dolore fugiat labore. Dolore proident sit amet quis est laboris et officia exercitation amet dolor. Et excepteur cillum nostrud anim officia labore elit officia dolore officia. Nulla magna eiusmod eiusmod dolor consectetur laboris eiusmod dolor voluptate. Tempor exercitation sunt laborum aliquip aliquip incididunt occaecat anim et nisi.
+### deployAsset
 
-Pariatur adipisicing reprehenderit commodo exercitation duis. Veniam dolore elit aute quis et fugiat commodo voluptate excepteur. Aliqua ad consectetur sunt nisi voluptate laboris culpa dolore anim. Aliqua incididunt et adipisicing veniam pariatur aliqua proident in.
+```solidity
+function deployAsset(
+    bytes32 _debridgeId,
+    string _name,
+    string _symbol,
+    uint8 _decimals
+) external returns (address deTokenAddress)
+```
 
-Nisi culpa nostrud ex veniam. Tempor ea qui voluptate officia et irure laborum. Enim sit sint culpa cillum velit sit in in. Do nisi nulla id ea culpa qui duis pariatur quis. Dolore eiusmod aute cillum aute fugiat officia esse magna.
+Deploy a deToken(`DeBridgeTokenProxy`) for an asset.
+
+**Parameters:**
+
+| Name          | Type      | Description                              |
+|---------------|-----------|------------------------------------------|
+| `_debridgeId` | `bytes32` | Asset id, see `DeBridgeGate.getDebridgeId` |
+| `_name`       | `string`  | The asset's name                         |
+| `_symbol`     | `string`  | The asset's symbol                       |
+| `_decimals`   | `uint8`   | The asset's decimals                     |
+
+## Events
+
+### DeBridgeTokenDeployed
+
+```solidity
+event DeBridgeTokenDeployed(
+    address asset,
+    string name,
+    string symbol,
+    uint8 decimals
+)
+```
+
+Emitted when a deToken(`DeBridgeTokenProxy`) is deployed using this contract
